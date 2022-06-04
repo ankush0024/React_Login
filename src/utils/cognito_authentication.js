@@ -29,9 +29,9 @@ export const signup = async function (name, email, password) {
     // let email = document.getElementById('signup-email').value.trim();
     // let password = document.getElementById('signup-password').value.trim();
 
-    if (name.length === 0 || email === 0 || password === 0) {
-        return;
-    }
+    // if (name.length === 0 || email === 0 || password === 0) {
+    //     return;
+    // }
 
     /* let attributeList = [
         new AWSCognito.CognitoIdentityServiceProvider.CognitoUserAttribute({
@@ -53,14 +53,13 @@ export const signup = async function (name, email, password) {
                 // signupMessage.style.display = 'block';
                 // signupMessage.className = 'alert alert-danger';
                 console.log(err)
-                alert('SignUp unsuccessful, some error occurred!')
-                reject(false);
+                // alert(err?.message?err?.message:'SignUp unsuccessful, some error occurred!')
+                reject([false,err.message]);
             }
             else {
                 cognitoUser = result.user;
-                localStorage.setItem('user', cognitoUser.username);
                 console.log('user name is ' + cognitoUser.getUsername());
-                resolve(true);
+                resolve([true]);
             }
 
             // Show a text box to enter Confirmation code
@@ -84,12 +83,11 @@ export const signup = async function (name, email, password) {
  * Confirm the user by taking the Confirmation code.
  * @param e
  */
-export const confirmUser = async function (code) {
+export const confirmUser = async function (username, code) {
 
     /*    e.preventDefault(); */
     // let verificationCode = document.getElementById('code').value;
 
-    let username = localStorage.getItem('user');
     var userData = {
         Username: username,
         Pool: userPool,
@@ -104,12 +102,12 @@ export const confirmUser = async function (code) {
                 /*  signupMessage.innerText = err;
                  signupMessage.style.display = 'block';
                  signupMessage.className = 'alert alert-danger'; */
-                alert("the code you have entered is wrong");
+                // alert("The code you have entered is wrong");
                 reject(false);
             }
             else {
                 console.log(result);
-                resolve(JSON.stringify(result));
+                resolve(true);
             }
 
             /*  signupMessage.innerText = result;
@@ -142,12 +140,12 @@ export const login = async function (email, password) {
     /*  let email = document.getElementById('signin-email').value;
      let password = document.getElementById('signin-password').value; */
 
-    if (email.length === 0 || password === 0 || userPool === null || userPool === undefined) {
-        /*  signinMessage.innerText = 'Fill in all fields!';
-         signinMessage.style.display = 'block';
-         signinMessage.className = 'alert alert-danger'; */
-        return;
-    }
+    // if (email.length === 0 || password === 0 || userPool === null || userPool === undefined) {
+    //     /*  signinMessage.innerText = 'Fill in all fields!';
+    //      signinMessage.style.display = 'block';
+    //      signinMessage.className = 'alert alert-danger'; */
+    //     return;
+    // }
 
     let authenticationData = {
         Username: email,
@@ -172,10 +170,10 @@ export const login = async function (email, password) {
                 /*  document.getElementById('token-section').style.display = 'block';
                  document.getElementById('signin-btn').style.display = 'none'; */
                 console.log(result);
-                let cognitoUseree = userPool.getCurrentUser();
-                console.log(cognitoUseree)
+                let cognitoUser2 = userPool.getCurrentUser();
+                console.log(cognitoUser2)
                 // Decode ID Token
-                let idToken = result.idToken.jwtToken;
+                // let idToken = result.idToken.jwtToken;
                 /*   document.getElementById('id-token').innerText = idToken;
                   document.getElementById('decoded-id-token').appendChild(parseIdToken(idToken));
     */
@@ -220,7 +218,7 @@ export const login = async function (email, password) {
             },
             onFailure: function (err) {
 
-                reject(err?.message);
+                reject(err.message);
 
             }
         }
